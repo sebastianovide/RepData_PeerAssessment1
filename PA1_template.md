@@ -45,7 +45,7 @@ median(df_steps)
 ```r
 df_intervals <- df[,c(1,3)]
 df_steps_intervals <- aggregate(df_intervals, by=list(df_intervals$interval), mean, na.rm=TRUE)
-plot(df_steps_intervals$interval, df_steps_intervals$steps , type='l', xlab = "intervals", ylab="median steps")
+plot(df_steps_intervals$interval, df_steps_intervals$steps , type='l', xlab = "intervals", ylab="number steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
