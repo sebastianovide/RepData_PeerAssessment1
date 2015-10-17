@@ -26,7 +26,16 @@ median(df_steps)
 
 
 ## What is the average daily activity pattern?
+```{r}
+df_intervals <- df[,c(1,3)]
+df_steps_intervals <- aggregate(df_intervals, by=list(df_intervals$interval), mean, na.rm=TRUE)
+plot(df_steps_intervals$interval, df_steps_intervals$steps , type='l', xlab = "intervals", ylab="median steps")
+```
 
+The interval with the maximun number of steps is
+```{r}
+df_steps_intervals[which.max(df_steps_intervals$steps),]$interval
+```
 
 
 ## Imputing missing values

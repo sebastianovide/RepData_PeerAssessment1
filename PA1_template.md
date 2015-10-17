@@ -9,7 +9,7 @@ df<-read.csv(unzip("activity.zip"))
 To calculate the steps per day:
 
 ```r
-df_steps <- aggregate(. ~ date, df, sum)[,2]
+df_steps <- tapply(df$steps, df$date, sum, na.rm = TRUE)
 ```
 
 
@@ -26,7 +26,7 @@ mean(df_steps)
 ```
 
 ```
-## [1] 10766.19
+## [1] 9354.23
 ```
 
 ```r
@@ -34,13 +34,30 @@ median(df_steps)
 ```
 
 ```
-## [1] 10765
+## [1] 10395
 ```
 
 
 
 ## What is the average daily activity pattern?
 
+```r
+df_intervals <- df[,c(1,3)]
+df_steps_intervals <- aggregate(df_intervals, by=list(df_intervals$interval), mean, na.rm=TRUE)
+plot(df_steps_intervals$interval, df_steps_intervals$steps , type='l', xlab = "intervals", ylab="median steps")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+The interval with the maximun number of steps is
+
+```r
+df_steps_intervals[which.max(df_steps_intervals$steps),]$interval
+```
+
+```
+## [1] 835
+```
 
 
 ## Imputing missing values
