@@ -17,7 +17,7 @@ df_steps <- aggregate(df_complete$steps, by=list(df_complete$date), sum)$x
 ## What is mean total number of steps taken per day?
 
 ```r
-hist(df_steps, xlab = "steps per day", main = "Histogram of steps")
+hist(df_steps, xlab = "steps per day", main = "Histogram of steps excluding NA")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
@@ -89,7 +89,7 @@ graph on the new data and mean and median
 
 ```r
 df2_steps <- tapply(df2$steps, df2$date, sum)
-hist(df2_steps, xlab = "steps per day")
+hist(df2_steps, xlab = "steps per day", main = "Histogram of steps replacing NA with mean")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
@@ -114,3 +114,21 @@ Obviusly the data are different than the original data. We see the Mean bar bigg
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+weekend / weekday factor
+
+```r
+df2$day <- factor(ifelse(weekdays(as.Date(df2$date)) %in% c("Sunday", "Saturday") ,"weekend", "weekday"))
+```
+
+
+```r
+df_weekday_steps <- aggregate(df2$steps, by=list(interval=df2$interval, weekday=df2$day), mean)
+
+library(lattice)
+xyplot( df_weekday_steps$x ~ df_weekday_steps$interval | df_weekday_steps$weekday, type = "l", xlab = "interval", ylab = "number steps", layout = c(1, 2) )
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
+from the graph it is possible to see that people walks less during the week and they walk more in the morning. During the weekend the people walk the same during the whole day.
+
