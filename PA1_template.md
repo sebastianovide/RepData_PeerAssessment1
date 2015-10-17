@@ -5,18 +5,19 @@
 
 ```r
 df<-read.csv(unzip("activity.zip"))
+df_complete <- na.omit(df)
 ```
 To calculate the steps per day:
 
 ```r
-df_steps <- tapply(df$steps, df$date, sum, na.rm = TRUE)
+df_steps <- aggregate(df_complete$steps, by=list(df_complete$date), sum)$x
 ```
 
 
 ## What is mean total number of steps taken per day?
 
 ```r
-hist(df_steps, xlab = "steps per day")
+hist(df_steps, xlab = "steps per day", main = "Histogram of steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
@@ -26,7 +27,7 @@ mean(df_steps)
 ```
 
 ```
-## [1] 9354.23
+## [1] 10766.19
 ```
 
 ```r
@@ -34,7 +35,7 @@ median(df_steps)
 ```
 
 ```
-## [1] 10395
+## [1] 10765
 ```
 
 
@@ -61,7 +62,55 @@ df_steps_intervals[which.max(df_steps_intervals$steps),]$interval
 
 
 ## Imputing missing values
+The number of no completed cases (rows with NA values):
 
+```r
+sum(!complete.cases(df))
+```
+
+```
+## [1] 2304
+```
+we'll replace the NA with the mean number of steps in that intervall
+
+```r
+steps_in_interval <- function(interval, steps){
+  if (is.na(steps))
+    steps <- round((df_steps_intervals[df_steps_intervals$interval==interval, "steps"]))
+   
+  return (steps)
+}
+
+df2 <- df
+df2$steps <- mapply(steps_in_interval, df2$interval, df2$steps)
+```
+
+graph on the new data and mean and median
+
+```r
+df2_steps <- tapply(df2$steps, df2$date, sum)
+hist(df2_steps, xlab = "steps per day")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+
+```r
+mean(df2_steps)
+```
+
+```
+## [1] 10765.64
+```
+
+```r
+median(df2_steps)
+```
+
+```
+## [1] 10762
+```
+
+Obviusly the data are different than the original data. We see the Mean bar bigger !
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
